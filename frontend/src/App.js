@@ -14,7 +14,7 @@ function App() {
   const [error, setError] = useState(null);
 
   // Backend API URL
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+  const API_URL = process.env.REACT_APP_API_URL || 'https://trial-app-production.up.railway.app';
 
   // Log API URL on component load
   useEffect(() => {
