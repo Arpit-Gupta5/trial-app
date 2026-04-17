@@ -1,0 +1,6 @@
+[services.backend]
+startCommand = "java -jar target/trial-app-backend-1.0.0.jar"
+root = "backend"
+
+[build]
+builder = "nixpacks"
