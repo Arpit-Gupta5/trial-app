@@ -1,118 +1,160 @@
 # Quick Start Guide
 
+## 🚀 Full Stack Trial App
+
+A complete, production-ready full-stack application with React frontend and Spring Boot backend.
+
 ## What's Included
 
-This is a complete, ready-to-deploy React application with:
-- ✅ Interactive counter component
-- ✅ Modern, responsive UI
-- ✅ Production-optimized build
-- ✅ Ready for hosting on the internet
+✅ **React Frontend** - Interactive UI, Counter, Todo List  
+✅ **Spring Boot Backend** - REST API with data endpoints  
+✅ **Frontend-Backend Integration** - Fully connected and working  
+✅ **CORS Enabled** - Secure cross-origin communication  
+✅ **Ready for Deployment** - Netlify (frontend) + Railway (backend)  
 
 ## Getting Started Locally
 
-### 1. Install Dependencies
+### Prerequisites
+- Node.js v14+ (for frontend)
+- Java 17+ (for backend)
+- No Maven install needed (included with backend)
+
+### Start Backend
+
+**Terminal 1:**
 ```bash
-npm install
+cd backend
+mvnw.bat spring-boot:run
 ```
 
-### 2. Start Development Server
+Backend starts at: `http://localhost:8080`
+
+**Verify it's working:**
 ```bash
+curl http://localhost:8080/api/hello
+```
+
+### Start Frontend
+
+**Terminal 2:**
+```bash
+cd frontend
+npm install
 npm start
 ```
 
-Your app will open at [http://localhost:3000](http://localhost:3000)
+Frontend opens at: `http://localhost:3000`
 
-### 3. Make Changes
+## Using the App
 
-Edit `src/App.js` to customize your app. Changes reload automatically.
+### Available Tabs
+
+1. **📊 Counter** - Interactive counter with buttons
+2. **✅ Todo List** - Add, check, and delete todos
+3. **🔗 Backend API** - See live data from the backend
+4. **ℹ️ About** - App information
+
+### Testing Backend Integration
+
+1. Go to **"🔗 Backend API"** tab
+2. Click **"📥 Fetch Data"** - Shows data from `/api/data`
+3. Click **"📋 Fetch Items"** - Shows items from `/api/items`
+4. Click **"🧪 Test Connection"** - Verifies backend is responding
+
+## API Endpoints
+
+| Endpoint | Method | Returns |
+|----------|--------|---------|
+| `/api/hello` | GET | Greeting message |
+| `/api/data` | GET | Sample data object |
+| `/api/items` | GET | Array of 3 items |
+| `/api/echo` | POST | Echo back request data |
+
+## Making Changes
+
+### Frontend Changes
+- Edit files in `frontend/src/`
+- Changes auto-reload in browser
+
+### Backend Changes
+- Edit files in `backend/src/main/java/`
+- Restart backend with `Ctrl+C` then run `mvnw.bat spring-boot:run` again
 
 ## Building for Production
 
+### Frontend Build
 ```bash
+cd frontend
 npm run build
 ```
+Creates optimized build in `frontend/build/`
 
-This creates an optimized `build` folder ready for deployment.
-
-## Deploy to the Internet
-
-Choose your hosting platform:
-
-### **Quickest Setup (Vercel)**
+### Backend Build
 ```bash
-npm install -g vercel
-vercel
+cd backend
+mvnw.bat package
 ```
+Creates JAR in `backend/target/trial-app-backend-1.0.0.jar`
 
-### **Easy Drag & Drop (Netlify)**
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+## Deploy to Production
 
-### **Free GitHub Pages**
-See [DEPLOYMENT.md](DEPLOYMENT.md) for setup steps.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step deployment guide.
+
+**Recommended Stack:**
+- Frontend → **Netlify** (free tier, 100 GB/month)
+- Backend → **Railway** (free tier, $5 credits/month)
+- Total cost: **Free** 🎉
 
 ## Project Structure
 
 ```
-trial-app/
-├── public/
-│   └── index.html          ← Main HTML file
-├── src/
-│   ├── App.js             ← Main component
-│   ├── App.css            ← Styles
-│   ├── index.js           ← Entry point
-│   └── index.css          ← Global styles
-├── build/                 ← Production build (created by npm run build)
-├── package.json           ← Project config
-└── DEPLOYMENT.md          ← Full deployment guide
+Trial-App/
+├── frontend/              # React app
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── .env.local        # API URL config
+├── backend/               # Spring Boot API
+│   ├── src/main/java/
+│   ├── pom.xml
+│   ├── mvnw.bat          # Maven Wrapper
+│   └── .mvn/
+├── DEPLOYMENT.md         # Production guide
+├── README.md             # Full docs
+└── QUICKSTART.md         # This file
 ```
 
-## Customization
+## Troubleshooting
 
-### Change the Title
-Edit `public/index.html`:
-```html
-<title>Your App Name</title>
-```
+### Backend won't start
+- Maven wrapper downloads automatically (1-2 min on first run)
+- Ensure Java 17+ is installed: `java -version`
 
-### Change Colors
-Edit `src/App.css` and modify the gradient:
-```css
-background: linear-gradient(135deg, #your-color-1 0%, #your-color-2 100%);
-```
+### Frontend shows blank page
+- Check browser console (F12)
+- Verify backend is running
+- Check `.env.local` exists with `REACT_APP_API_URL=http://localhost:8080`
 
-### Add Your Content
-Replace content in `src/App.js` in the JSX section.
-
-## Available Scripts
-
-- `npm start` - Start dev server
-- `npm run build` - Create production build
-- `npm test` - Run tests
-- `npm run eject` - Advanced configuration (cannot be undone)
-
-## Common Issues
-
-**Port 3000 already in use?**
-```bash
-npm start -- --port 3001
-```
-
-**Blank page after deploy?**
-- Check your hosting platform's build settings
-- Ensure `build` folder is being deployed
-
-**Need help?**
-- See [DEPLOYMENT.md](DEPLOYMENT.md) for more detailed information
-- Check [React documentation](https://react.dev)
+### API tab shows no data
+- Click "🧪 Test Connection" to verify backend
+- Check browser DevTools Console (F12)
+- Restart frontend after backend restart
 
 ## Next Steps
 
-1. ✅ Customize the app
-2. ✅ Test locally (`npm start`)
-3. ✅ Build for production (`npm run build`)
-4. ✅ Deploy using your chosen platform (see [DEPLOYMENT.md](DEPLOYMENT.md))
-5. ✅ Share your live app with the world!
+1. ✅ Backend running at `http://localhost:8080`
+2. ✅ Frontend running at `http://localhost:3000`
+3. ✅ API integration working
+4. 📤 Deploy to production (see [DEPLOYMENT.md](DEPLOYMENT.md))
+5. 💾 (Optional) Add database (PostgreSQL via Supabase)
+6. 🔐 (Optional) Add authentication
 
 ---
 
-**Happy deploying! 🚀**
+**See also:**
+- [Full Documentation](README.md)
+- [Frontend README](frontend/README.md)
+- [Backend README](backend/README.md)
+- [Deployment Guide](DEPLOYMENT.md)
+
+**Happy coding!** 🎉

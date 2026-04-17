@@ -1,29 +1,265 @@
-# Deployment Guide for Trial App
+# Deployment Guide - Full Stack
 
-This guide will walk you through deploying your React application to various hosting platforms.
+Complete guide to deploy Trial App (Frontend + Backend) to production using **Netlify + Railway**.
 
 ## Prerequisites
 
-Before deploying, make sure you have:
-- Node.js and npm installed
-- The `build` folder generated (run `npm run build`)
-- A GitHub account (optional, for some platforms)
+- GitHub account with repo containing this code
+- Netlify account (free at netlify.com)
+- Railway account (free at railway.app)
 
-## Building for Production
+## Architecture
 
-First, create an optimized production build:
-
-```bash
-npm run build
+```
+Frontend (React)          Backend (Spring Boot)
+on Netlify                on Railway
+↓                         ↑
+└──────→ HTTP API calls ←─┘
 ```
 
-This creates a `build` folder with optimized, minified files ready for deployment.
+## Step 1: Prepare Repository
+
+### 1.1 Update Backend CORS
+
+Edit `backend/src/main/java/com/example/trialapp/TrialAppApplication.java`:
+
+Find this section:
+```java
+.allowedOrigins(
+    "http://localhost:3000",
+    "https://your-site.netlify.app"  // ← Update with your Netlify URL
+)
+```
+
+You'll update this after getting your Netlify URL.
+
+### 1.2 Push to GitHub
+
+```bash
+git add .
+git commit -m "Full stack app: React frontend + Spring Boot backend"
+git push origin main
+```
+
+## Step 2: Deploy Backend to Railway
+
+### 2.1 Connect Railway
+
+1. Go to [railway.app](https://railway.app)
+2. Sign in with GitHub
+3. Click "New Project" → "Deploy from GitHub repo"
+4. Select your repository
+5. Click "Deploy Now"
+
+### 2.2 Configure Project
+
+Railway auto-detects Maven and builds automatically. No config needed!
+
+### 2.3 Set Environment Variables
+
+In Railway Dashboard:
+1. Go to your project
+2. Click "Variables"
+3. Add: `PORT=8080`
+
+### 2.4 Get Backend URL
+
+1. In Railway Dashboard, go to "Deployments"
+2. Your service URL will look like:
+   ```
+   https://trial-app-backend-production.railway.app
+   ```
+3. Copy this URL - you'll use it in the next steps
+
+## Step 3: Deploy Frontend to Netlify
+
+### 3.1 Connect Netlify
+
+1. Go to [netlify.com](https://netlify.com)
+2. Sign in with GitHub
+3. Click "Add new site" → "Import an existing project"
+4. Select your repository
+
+### 3.2 Configure Build
+
+Netlify will show build settings. Fill in:
+
+- **Base directory**: `frontend`
+- **Build command**: `npm install && npm run build`
+- **Publish directory**: `frontend/build`
+
+### 3.3 Set Environment Variables
+
+Before deploying, add:
+- Name: `REACT_APP_API_URL`
+- Value: `https://your-backend-railway-url.railway.app` (from Step 2.4)
+
+Example:
+```
+REACT_APP_API_URL=https://trial-app-backend-production.railway.app
+```
+
+### 3.4 Deploy
+
+Click "Deploy site". Netlify will build and deploy automatically.
+
+Your site URL looks like:
+```
+https://trial-app-abc123.netlify.app
+```
+
+## Step 4: Update Backend CORS
+
+Now that you have both URLs:
+
+### 4.1 Update Backend Code
+
+Edit `backend/src/main/java/com/example/trialapp/TrialAppApplication.java`:
+
+Replace:
+```java
+"https://your-site.netlify.app"
+```
+
+With your actual Netlify URL:
+```java
+"https://trial-app-abc123.netlify.app"
+```
+
+### 4.2 Push Changes
+
+```bash
+git add backend/
+git commit -m "Update CORS with production Netlify URL"
+git push origin main
+```
+
+Both Railway and Netlify will auto-redeploy.
+
+## Step 5: Test Production
+
+### 5.1 Test Backend API
+
+```bash
+curl https://your-backend-railway-url.railway.app/api/hello
+```
+
+You should see:
+```json
+{
+  "message": "Hello from Spring Boot Backend!",
+  "status": "success"
+}
+```
+
+### 5.2 Test Frontend
+
+1. Open your Netlify URL in browser
+2. Open DevTools (F12) → Console tab
+3. Frontend should call backend without CORS errors
+
+Check the Network tab to see API calls to your backend.
+
+## Deployment Summary
+
+| Component | Location | URL |
+|-----------|----------|-----|
+| Frontend | Netlify | `https://trial-app-xxx.netlify.app` |
+| Backend | Railway | `https://trial-app-backend-production.railway.app` |
+| Database | (optional) | - |
+
+## Making Changes
+
+### Frontend Only
+- Edit files in `frontend/` folder
+- Push to GitHub
+- Netlify auto-redeploys in ~1-2 minutes
+
+### Backend Only
+- Edit files in `backend/` folder
+- Push to GitHub
+- Railway auto-rebuilds and deploys in ~2-3 minutes
+
+### Both
+- Push to main
+- Both deploy independently (no conflicts)
+
+## Monitoring & Logs
+
+### Railway Logs
+1. Go to project in Railway
+2. Click "Deployments"
+3. Select deployment
+4. View "Logs" tab
+
+### Netlify Logs
+1. Go to site in Netlify
+2. Click "Deploys"
+3. Click on deployment
+4. View "Deploy log"
+
+## Troubleshooting
+
+### CORS Error in Frontend Console
+```
+Access to XMLHttpRequest blocked by CORS policy
+```
+
+**Fix:**
+1. Check `REACT_APP_API_URL` environment variable on Netlify
+2. Verify backend CORS config has your Netlify URL
+3. Redeploy backend after updating CORS
+
+### API Returns 503/504 Error
+**Fix:**
+1. Check Railway logs for errors
+2. Verify backend deployed successfully
+3. Wait 1-2 minutes for Railway deployment to complete
+
+### Frontend shows blank page
+**Fix:**
+1. Open DevTools Console
+2. Check for JavaScript errors
+3. Check Network tab for failed requests
+4. Redeploy Netlify
+
+## Optional: Custom Domains
+
+### Custom Frontend Domain
+1. In Netlify → Site settings → Domain management
+2. Add your domain
+3. Follow DNS instructions
+4. Update backend CORS with new domain
+
+### Custom Backend Domain
+1. In Railway → project → Domain
+2. Add custom domain
+3. Update `REACT_APP_API_URL` on Netlify
+
+## Cost Estimate (Free Tier)
+
+| Service | Free Tier | Cost/Month |
+|---------|-----------|-----------|
+| Netlify | 100 GB bandwidth | $0 |
+| Railway | $5 free credits | $0 (or ~$5-10 if over) |
+| **Total** | | **$0-10** |
+
+Extremely affordable for small projects!
+
+## Next Steps
+
+1. ✅ Production deployed
+2. Add database (PostgreSQL via Supabase)
+3. Add authentication (Firebase Auth)
+4. Add monitoring (Sentry)
+5. Set up automatic backups
 
 ---
 
-## Deployment Options
+**See also:**
+- [backend/README.md](backend/README.md) - Backend API docs
+- [README.md](README.md) - Main project README
 
-### 1. **Vercel** (Recommended for React)
 
 Vercel is the creator of Next.js and provides excellent React hosting with automatic CI/CD.
 
