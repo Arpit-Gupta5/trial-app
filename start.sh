@@ -1,0 +1,4 @@
+#!/bin/bash
+cd backend
+./mvnw clean package -DskipTests
+java -jar target/trial-app-backend-1.0.0.jar
