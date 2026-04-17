@@ -1,2 +1,4 @@
 [services.backend]
 root = "backend"
+buildCommand = "./mvnw clean package -DskipTests"
+startCommand = "java -jar target/trial-app-backend-1.0.0.jar"
