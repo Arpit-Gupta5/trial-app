@@ -1,4 +1,4 @@
 [services.backend]
 root = "backend"
-buildCommand = "cd backend && ./mvnw clean package"
+buildCommand = "./mvnw clean package"
 startCommand = "java -jar ./target/trial-app-backend-1.0.0.jar"
