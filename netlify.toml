@@ -1,11 +1,12 @@
 [build]
   base = "frontend"
-  command = "CI=false npm install && CI=false npm run build"
+  command = "npm ci --prefer-offline --no-audit && npm run build"
   publish = "frontend/build"
 
 [build.environment]
   NODE_VERSION = "18"
-  REACT_APP_API_URL = "http://localhost:8080"
+  NPM_FLAGS = "--legacy-peer-deps"
+  CI = "false"
 
 [[redirects]]
   from = "/*"
