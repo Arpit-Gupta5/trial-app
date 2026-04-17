@@ -1,2 +1,4 @@
 [services.backend]
 root = "backend"
+buildCommand = "./mvnw -v && ./mvnw clean package"
+startCommand = "bash start.sh"
